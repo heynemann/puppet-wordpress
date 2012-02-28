@@ -23,8 +23,15 @@ class wordpress::app {
 		default => php
 	}
 
+    exec {
+        aptitude_update:
+            command => "sudo aptitude update",
+            path => "/usr/bin"
+    }
+
 	package { ["${apache}","${php}","${phpmysql}"]: 
-		ensure => latest 
+		ensure => latest,
+        require => Exec['aptitude_update']
 	}
 
 	service { $apache:
