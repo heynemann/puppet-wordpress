@@ -104,6 +104,17 @@ class wordpress::app {
 			source =>   "puppet:///modules/wordpress/wordpress.conf",
 			replace =>  true,
 			require =>  Package["${apache}"];
+		"apache_port":
+			path =>    $apache ? {
+				httpd =>    "/etc/httpd/conf.d/ports.conf",
+				apache2 =>  "/etc/apache2/ports.conf",
+				default =>  "/etc/httpd/conf.d/ports.conf",
+			},
+			ensure =>   file,
+			content =>  template("wordpress/ports.conf.erb"),
+			replace =>  true,
+            notify => Service["${apache}"],
+			require =>  Package["${apache}"];
     	}
 
 	exec {
